@@ -1,7 +1,7 @@
 /*
 @file	  grid.h
 @author	  Ang Jiawei Jarrett (a.jiaweijarrett)
-@date     27/09/2022
+@date     23/10/2022
 @brief    This header file
 ______________________________________________________________________*/
 
@@ -31,4 +31,13 @@ void panel_apply_all_transformations(void);
 void panel_ihat_transformation(CP_Vector transformed_ihat);
 void panel_jhat_transformation(CP_Vector transformed_jhat);
 
-void panel_check_clicked(int mouse_x, int mouse_y);
+void panel_add_clickable(float pos_x, float pos_y, float size_x, float size_y, int max_count);
+void panel_mouse_clicked(float mouse_x, float mouse_y);
+void panel_number_keyed(char number);
+void panel_space_keyed(void);
+void panel_clear_input(void);
+
+void panel_input_ihat_init(void);
+void panel_input_ihat_update(char number);
+void panel_input_ihat_space(void);
+void panel_input_ihat_reset(void);

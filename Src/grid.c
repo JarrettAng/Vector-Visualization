@@ -1,16 +1,13 @@
 /*!
 @file	  grid.c
 @author	  Ang Jiawei Jarrett (a.jiaweijarrett)
-@date     14/09/2022
+@date     23/10/2022
 @brief    This source file 
 ______________________________________________________________________*/
 
 #include "cprocessing.h"
 #include "grid.h"
 #include "utils.h"
-
-#include <stdio.h>
-#include <stdlib.h>
 
 // Grid settings
 #define SIZE_X 31
@@ -139,15 +136,15 @@ void grid_point_render(void) {
 			(index_x == centre_x && index_y == centre_y-1) ? CP_Settings_Fill(CP_Color_Create(255, 0, 0, 255)) : CP_Settings_Fill(ORIG_GRID_COLOR);
  			CP_Graphics_DrawCircle(current_point->screen_x, current_point->screen_y, POINT_SIZE);
 
-			char buffer[50] = { 0 };
-			sprintf_s(buffer, _countof(buffer), "%d,%d", current_point->x, current_point->y);
-			char buffer2[50] = { 0 };
-			sprintf_s(buffer2, _countof(buffer), "%.0f,%.0f", current_point->screen_x, current_point->screen_y);
+			//char buffer[50] = { 0 };
+			//sprintf_s(buffer, _countof(buffer), "%d,%d", current_point->x, current_point->y);
+			//char buffer2[50] = { 0 };
+			//sprintf_s(buffer2, _countof(buffer), "%.0f,%.0f", current_point->screen_x, current_point->screen_y);
 
 			CP_Settings_Fill(ORIG_AXIS_COLOR);
 			CP_Settings_TextSize(15.0f);
-			CP_Font_DrawText(buffer, current_point->screen_x, current_point->screen_y);
-			CP_Font_DrawText(buffer2, current_point->screen_x, current_point->screen_y + 15);
+			//CP_Font_DrawText(buffer, current_point->screen_x, current_point->screen_y);
+			//CP_Font_DrawText(buffer2, current_point->screen_x, current_point->screen_y + 15);
 		}
 	}
 }

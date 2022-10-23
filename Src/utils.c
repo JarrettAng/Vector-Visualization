@@ -1,7 +1,7 @@
 /*!
 @file	  utils.c
 @author	  Ang Jiawei Jarrett (a.jiaweijarrett)
-@date     14/09/2022
+@date     23/10/2022
 @brief    This source file 
 ______________________________________________________________________*/
 
@@ -10,6 +10,8 @@ ______________________________________________________________________*/
 
 #include "utils.h"
 
+//----------------------------------------------------------------------------------------------------------------
+// Basic shapes
 void draw_rect(float left, float top, float length, float height, CP_Color color, float border) {
 	CP_Settings_StrokeWeight(border);
 	CP_Settings_Fill(color);
@@ -51,12 +53,7 @@ void draw_circle_noborder(float point_x, float point_y, float diameter, CP_Color
 	draw_circle(point_x, point_y, diameter, color, .0f);
 }
 
-void draw_text(char *text, float pos_x, float pos_y, CP_Color color) {
-	CP_Settings_TextSize(32.0f);
-	CP_Settings_Fill(color);
-	CP_Font_DrawText(text, pos_x, pos_y);
-}
-
+//----------------------------------------------------------------------------------------------------------------
 // Complex shapes
 void draw_vector_arrow(float point_x, float point_y, CP_Vector distance, CP_Color color) {
 	CP_Vector normal = CP_Vector_Set(-distance.y, distance.x);
@@ -90,4 +87,43 @@ void draw_matrix_box(float left, float top, int value_x, int value_y, float box_
 	draw_rect_noborder(left + box_width - box_thickness, top, box_thickness, box_height, color);
 	draw_rect_noborder(left + box_width - box_thickness - bracket_stub, top, bracket_stub, box_thickness, color);
 	draw_rect_noborder(left + box_width - box_thickness - bracket_stub, top + box_height - box_thickness, bracket_stub, box_thickness, color);
+}
+
+//----------------------------------------------------------------------------------------------------------------
+// Text
+
+Text text_create(float pos_x, float pos_y, char *text, CP_Color color, float size) {
+	Text new_text = { .pos.x = pos_x, .pos.y = pos_y, .text = text, .color = color, .size = size };
+	return new_text;
+}
+
+void draw_text_full(char *text, float pos_x, float pos_y, CP_Color color, CP_TEXT_ALIGN_HORIZONTAL h_align, CP_TEXT_ALIGN_VERTICAL v_align, float size) {
+	CP_Settings_TextAlignment(h_align, v_align);
+	CP_Settings_TextSize(size);
+	CP_Settings_Fill(color);
+	CP_Font_DrawText(text, pos_x, pos_y);
+}
+
+void draw_text(char* text, float pos_x, float pos_y, CP_Color color) {
+	draw_text_full(text, pos_x, pos_y, color, CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_MIDDLE, TEXT_SIZE_DEFAULT);
+}
+
+void draw_text_top_left(char* text, float pos_x, float pos_y, CP_Color color, float size) {
+	draw_text_full(text, pos_x, pos_y, color, CP_TEXT_ALIGN_H_LEFT, CP_TEXT_ALIGN_V_TOP, size);
+}
+
+//----------------------------------------------------------------------------------------------------------------
+// Colliders
+Collider collider_create(float pos_x, float pos_y, float size_x, float size_y, int max_count) {
+	Collider new_collider = { .pos.x = pos_x, .pos.y = pos_y, .size.x = size_x, .size.y = size_y , .max_input_count = max_count };
+	return new_collider;
+}
+
+BOOL is_clicked(float mouse_x, float mouse_y, const Collider *collider) {
+	if (mouse_x >= collider->pos.x && mouse_x <= collider->pos.x + collider->size.x) {
+		if (mouse_y >= collider->pos.y && mouse_y <= collider->pos.y + collider->size.y) {
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
