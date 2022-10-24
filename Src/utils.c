@@ -65,7 +65,7 @@ void draw_vector_arrow(float point_x, float point_y, CP_Vector distance, CP_Colo
 }
 
 void draw_matrix_box(float left, float top, int value_x, int value_y, float box_height, float box_width, CP_Color color, BOOL force_draw_text) {
-	float box_thickness = 3.0f, bracket_stub = box_width / 6.0f;
+	float box_thickness = 3.0f, bracket_stub = box_thickness  * 4.0f;
 
 	// Left bracket [
 	draw_rect_noborder(left, top, box_thickness, box_height, color);

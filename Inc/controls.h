@@ -41,3 +41,4 @@ void panel_input_basevector_init(void);
 void panel_input_basevector_update(char number);
 void panel_input_basevector_space(void);
 void panel_input_basevector_reset(void);
+void panel_input_basevector_matrix_reset(void);
