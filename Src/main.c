@@ -56,13 +56,8 @@ void process_input(void) {
 	else if (CP_Input_KeyTriggered(KEY_MINUS)) panel_number_keyed('-');
 
 	// When space is pressed
-	if (CP_Input_KeyTriggered(KEY_SPACE)) {
+	if (CP_Input_KeyTriggered(KEY_ENTER)) {
 		panel_space_keyed();
-	}
-
-	// Debugging
-	if (CP_Input_KeyTriggered(KEY_R)) {
-		panel_input_new_vector_at(2, 3, 2);
 	}
 }
 

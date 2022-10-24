@@ -21,6 +21,7 @@ void panel_render(void);
 Matrix panel_create_vector(float pos_x, float pos_y, int value_x, int value_y, CP_Color color);
 Matrix panel_create_vector_empty(float pos_x, float pos_y, CP_Color color);
 
+void panel_input_replace_vector_at(int value_x, int value_y, int index);
 void panel_input_new_vector_at(int value_x, int value_y, int index);
 void panel_input_new_vector(int value_x, int value_y);
 void panel_input_new_base_vector(int value_x, int value_y);
@@ -42,3 +43,7 @@ void panel_input_basevector_update(char number);
 void panel_input_basevector_space(void);
 void panel_input_basevector_reset(void);
 void panel_input_basevector_matrix_reset(void);
+void panel_input_change_vector_init(void);
+void panel_input_vector_update(char number);
+void panel_input_vector_space(void);
+void panel_input_vector_reset(void);

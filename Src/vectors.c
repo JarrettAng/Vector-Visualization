@@ -41,6 +41,19 @@ void vectors_render(void) {
 	}
 }
 
+// Vector will be replaced based on the color given
+void vector_replace(float x, float y, CP_Color color) {
+	Vector *current;
+	for (int index = 0; index < vectors_count; ++index) {
+		current = &vectors_list[index];
+
+		if (current->color.r == color.r && current->color.g == color.g && current->color.b == color.b) {
+			current->pos.x = x;
+			current->pos.y = y;
+		}
+	}
+}
+
 void vector_create(float x, float y, CP_Color color) {
 	Vector new_vector = { .pos.x = x, .pos.y = y, .color = color };
 	vectors_list[vectors_count] = new_vector;
