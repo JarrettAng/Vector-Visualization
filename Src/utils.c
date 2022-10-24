@@ -112,6 +112,10 @@ void draw_text_top_left(char* text, float pos_x, float pos_y, CP_Color color, fl
 	draw_text_full(text, pos_x, pos_y, color, CP_TEXT_ALIGN_H_LEFT, CP_TEXT_ALIGN_V_TOP, size);
 }
 
+void draw_text_centre(char* text, float pos_x, float pos_y, CP_Color color, float size) {
+	draw_text_full(text, pos_x, pos_y, color, CP_TEXT_ALIGN_H_CENTER, CP_TEXT_ALIGN_V_MIDDLE, size);
+}
+
 //----------------------------------------------------------------------------------------------------------------
 // Colliders
 Collider collider_create(float pos_x, float pos_y, float size_x, float size_y, int max_count) {

@@ -37,7 +37,7 @@ void panel_number_keyed(char number);
 void panel_space_keyed(void);
 void panel_clear_input(void);
 
-void panel_input_ihat_init(void);
-void panel_input_ihat_update(char number);
-void panel_input_ihat_space(void);
-void panel_input_ihat_reset(void);
+void panel_input_basevector_init(void);
+void panel_input_basevector_update(char number);
+void panel_input_basevector_space(void);
+void panel_input_basevector_reset(void);

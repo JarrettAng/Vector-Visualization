@@ -40,6 +40,7 @@ Text text_create(float pos_x, float pos_y, char *text, CP_Color color, float siz
 void draw_text_full(char* text, float pos_x, float pos_y, CP_Color color, CP_TEXT_ALIGN_HORIZONTAL h_align, CP_TEXT_ALIGN_VERTICAL v_align, float size);
 void draw_text(char *text, float pos_x, float pos_y, CP_Color color);
 void draw_text_top_left(char* text, float pos_x, float pos_y, CP_Color color, float size);
+void draw_text_centre(char* text, float pos_x, float pos_y, CP_Color color, float size);
 
 Collider collider_create(float pos_x, float pos_y, float size_x, float size_y, int max_count);
 BOOL is_clicked(float mouse_x, float mouse_y, const Collider *collider);

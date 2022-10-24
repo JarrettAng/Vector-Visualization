@@ -36,7 +36,8 @@ ______________________________________________________________________*/
 
 // Text settings
 #define TEXT_TITLE_COUNT 2
-#define TEXT_BASE_V_COUNT 13
+#define TEXT_BASE_V_COUNT 9
+#define TEXT_BASE_V_INPUT_COUNT 4
 #define TEXT_V_COUNT 1
 #define DEFAULT_HEADER_TEXT_SIZE 48.0f
 #define DEFAULT_HINT_TEXT_SIZE 24.0f
@@ -52,6 +53,7 @@ CP_Vector title_panel_top_left;
 
 // Base vectors panel
 Text text_base_v[TEXT_BASE_V_COUNT];
+Text text_base_v_input[TEXT_BASE_V_INPUT_COUNT];
 CP_Vector b_v_panel_top_left;
 Matrix b_v_matrix;
 
@@ -70,12 +72,14 @@ Collider clickables[MAX_CLICKABLE_LIST];
 int clickable_count = 0;
 // Input
 #define MAX_INPUT_LIST 3
-char input_text_storage[MAX_CLICKABLE_LIST][MAX_INPUT_LIST] = { '\0' };
+#define MAX_INPUTS_TOTAL_LIST 4
+char input_text_storage[MAX_CLICKABLE_LIST][MAX_INPUTS_TOTAL_LIST][MAX_INPUT_LIST + 1] = { '\0' }; // The last array in this 3D array +1 because the last character needs to be the terminator '\0'
 char input_text[MAX_INPUT_LIST] = { '\0' };
 int input_text_index = 0;
 int input_space_count = 0;
 int input_max_count = 0;
 int clicked_index = -1;
+BOOL input_text_index_capped = FALSE;
 
 void panel_init(void) {
 	//----------------------------------------------------------------------------------------------------------------
@@ -133,25 +137,25 @@ void panel_init(void) {
 	text_base_v[0] = text_create(b_v_panel_top_left.x, b_v_panel_top_left.y, "Change base vectors", HEADER_DEFAULT_COLOR, DEFAULT_HEADER_TEXT_SIZE);
 	
 	text_base_v[1] = text_create(b_v_panel_top_left.x, b_v_panel_top_left.y + DEFAULT_HEADER_TEXT_SIZE + 10.0f, "Input new i-hat:", I_HAT_COLOR, TEXT_SIZE_DEFAULT);
-	text_base_v[2] = text_create(b_v_panel_top_left.x + 200.0f, b_v_panel_top_left.y + DEFAULT_HEADER_TEXT_SIZE + 10.0f, "(        ,          )", I_HAT_COLOR, TEXT_SIZE_DEFAULT);
-	panel_add_clickable(text_base_v[2].pos.x, text_base_v[2].pos.y, 200.0f, TEXT_SIZE_DEFAULT, 2); // Add text to clickables (text size hard-coded)
+	text_base_v[2] = text_create(b_v_panel_top_left.x + 200.0f, b_v_panel_top_left.y + DEFAULT_HEADER_TEXT_SIZE + 10.0f, "(         ,         )", I_HAT_COLOR, TEXT_SIZE_DEFAULT);
+	panel_add_clickable(text_base_v[2].pos.x, text_base_v[2].pos.y - 5.0f, 130.0f, TEXT_SIZE_DEFAULT + 10.0f, 2); // Add text to clickables (text size hard-coded)
 
 	text_base_v[3] = text_create(b_v_panel_top_left.x, text_base_v[1].pos.y + TEXT_SIZE_DEFAULT + 20.0f, "Input new j-hat:", J_HAT_COLOR, TEXT_SIZE_DEFAULT);
-	text_base_v[4] = text_create(b_v_panel_top_left.x + 200.0f, text_base_v[1].pos.y + TEXT_SIZE_DEFAULT + 20.0f, "(        ,          )", J_HAT_COLOR, TEXT_SIZE_DEFAULT);
-	panel_add_clickable(text_base_v[4].pos.x, text_base_v[4].pos.y, 200.0f, TEXT_SIZE_DEFAULT, 2); // Add text to clickables (text size hard-coded)
+	text_base_v[4] = text_create(b_v_panel_top_left.x + 200.0f, text_base_v[1].pos.y + TEXT_SIZE_DEFAULT + 20.0f, "(         ,         )", J_HAT_COLOR, TEXT_SIZE_DEFAULT);
+	panel_add_clickable(text_base_v[4].pos.x, text_base_v[4].pos.y - 5.0f, 130.0f, TEXT_SIZE_DEFAULT + 10.0f, 2); // Add text to clickables (text size hard-coded)
 
 	text_base_v[5] = text_create(b_v_panel_top_left.x + 375.0f, b_v_panel_top_left.y + DEFAULT_HEADER_TEXT_SIZE + 10.0f, "Input new", HATS_COMBINED_COLOR, TEXT_SIZE_DEFAULT);
 	text_base_v[6] = text_create(b_v_panel_top_left.x + 375.0f, text_base_v[5].pos.y + TEXT_SIZE_DEFAULT, "i/j-hat matrix:", HATS_COMBINED_COLOR, TEXT_SIZE_DEFAULT);
 	b_v_matrix = panel_create_vector_empty(b_v_panel_top_left.x + 560.0f, b_v_panel_top_left.y + DEFAULT_HEADER_TEXT_SIZE + 15.0f, HATS_COMBINED_COLOR);
 
 	text_base_v[7] = text_create(b_v_panel_top_left.x, text_base_v[3].pos.y + 60.0f, "Click on a bracket, type any number, press space to advance to next.", HINT_DEFAULT_COLOR, DEFAULT_HINT_TEXT_SIZE);
-	text_base_v[8] = text_create(b_v_panel_top_left.x, text_base_v[7].pos.y + DEFAULT_HINT_TEXT_SIZE, "Once all numbers typed, press space to confirm and end typing.", HINT_DEFAULT_COLOR, DEFAULT_HINT_TEXT_SIZE);
+	text_base_v[8] = text_create(b_v_panel_top_left.x, text_base_v[7].pos.y + DEFAULT_HINT_TEXT_SIZE, "Once all numbers typed, press space to confirm and end typing. [No backspacing]", HINT_DEFAULT_COLOR, DEFAULT_HINT_TEXT_SIZE);
 
 	// Numbers to draw in the i-hat and j-hat brackets
-	text_base_v[9] = text_create(text_base_v[2].pos.x + 15.0f, text_base_v[2].pos.y, "", I_HAT_COLOR, TEXT_SIZE_DEFAULT);
-	text_base_v[10] = text_create(text_base_v[2].pos.x + 70.0f, text_base_v[2].pos.y, "", I_HAT_COLOR, TEXT_SIZE_DEFAULT);
-	text_base_v[11] = text_create(text_base_v[4].pos.x + 15.0f, text_base_v[4].pos.y, "", J_HAT_COLOR, TEXT_SIZE_DEFAULT);
-	text_base_v[12] = text_create(text_base_v[4].pos.x + 70.0f, text_base_v[4].pos.y, "", J_HAT_COLOR, TEXT_SIZE_DEFAULT);
+	text_base_v_input[0] = text_create(text_base_v[2].pos.x + 35.0f, text_base_v[2].pos.y + TEXT_SIZE_DEFAULT / 2, "", I_HAT_COLOR, TEXT_SIZE_DEFAULT);
+	text_base_v_input[1] = text_create(text_base_v[2].pos.x + 95.0f, text_base_v[2].pos.y + TEXT_SIZE_DEFAULT / 2, "", I_HAT_COLOR, TEXT_SIZE_DEFAULT);
+	text_base_v_input[2] = text_create(text_base_v[4].pos.x + 35.0f, text_base_v[4].pos.y + TEXT_SIZE_DEFAULT / 2, "", J_HAT_COLOR, TEXT_SIZE_DEFAULT);
+	text_base_v_input[3] = text_create(text_base_v[4].pos.x + 95.0f, text_base_v[4].pos.y + TEXT_SIZE_DEFAULT / 2, "", J_HAT_COLOR, TEXT_SIZE_DEFAULT);
 }
 
 void panel_render(void) {
@@ -201,6 +205,10 @@ void panel_render(void) {
 		draw_text_top_left(current_b_v_text->text, current_b_v_text->pos.x, current_b_v_text->pos.y, current_b_v_text->color, current_b_v_text->size);
 	}
 	draw_matrix_box(b_v_matrix.pos.x, b_v_matrix.pos.y, b_v_matrix.value_x, b_v_matrix.value_y, MATRIX_BOX_HEIGHT + 9.0f, MATRIX_BOX_WIDTH * 3.0f, b_v_matrix.color, FALSE);
+	for (int index = 0; index < TEXT_BASE_V_INPUT_COUNT; ++index) {
+		current_b_v_text = &text_base_v_input[index];
+		draw_text_centre(current_b_v_text->text, current_b_v_text->pos.x, current_b_v_text->pos.y, current_b_v_text->color, current_b_v_text->size);
+	}
 }
 
 Matrix panel_create_vector(float pos_x, float pos_y, int value_x, int value_y, CP_Color color) {
@@ -302,18 +310,29 @@ void panel_mouse_clicked(float mouse_x, float mouse_y) {
 			break;
 		}
 	}
+
+	// Initialize depending on what was clicked
+	switch (clicked_index) {
+	case 0: panel_input_basevector_init(); break;
+	case 1: panel_input_basevector_init(); break;
+	}
 }
 
 void panel_number_keyed(char number) {
-	if (clicked_index < 0 || input_text_index >= MAX_INPUT_LIST) return;
+	if (clicked_index < 0 || input_text_index_capped) return;
 	if (number == '-' && input_text_index != 0) return;
 
 	// Do something depending on what was clicked
 	switch (clicked_index) {
-		case 0: panel_input_ihat_update(number); break;
-		case 1: panel_input_jhat(number); break;
+		case 0: panel_input_basevector_update(number); break;
+		case 1: panel_input_basevector_update(number); break;
 	}
 
+	// If the index is already at max, don't add to it
+	if (input_text_index >= MAX_INPUT_LIST - 1) {
+		input_text_index_capped = TRUE;
+		return;
+	}
 	++input_text_index;
 }
 
@@ -322,8 +341,8 @@ void panel_space_keyed(void) {
 
 	// Do something depending on what was clicked
 	switch (clicked_index) {
-	case 0: panel_input_ihat_space(); break;
-	case 1: panel_input_jhat_update(); break;
+	case 0: panel_input_basevector_space(); break;
+	case 1: panel_input_basevector_space(); break;
 	}
 
 	// Reset the input read pointer and increase space counter
@@ -331,6 +350,7 @@ void panel_space_keyed(void) {
 	for (int index = 0; index < MAX_INPUT_LIST; ++index) {
 		input_text[index] = '\0';
 	}
+	input_text_index_capped = FALSE;
 
 	++input_space_count;
 
@@ -340,45 +360,72 @@ void panel_space_keyed(void) {
 }
 
 void panel_clear_input(void) {
-	clicked_index = -1;
-	input_space_count = 0;
-
 	// Reset based on what was clicked
 	switch (clicked_index) {
-	case 0: panel_input_ihat_reset(); break;
-	case 1: panel_input_jhat_reset(); break;
+	case 0: panel_input_basevector_reset(); break;
+	case 1: panel_input_basevector_reset(); break;
 	}
+
+	// Reset the input read pointer and increase space counter
+	input_text_index = 0;
+	for (int index = 0; index < MAX_INPUT_LIST; ++index) {
+		input_text[index] = '\0';
+	}
+
+	clicked_index = -1;
+	input_space_count = 0;
+	input_max_count = 0;
 }
 
 //----------------------------------------------------------------------------------------------------------------
 // Different clicked cases
 
 // Case 0-1: Change base i-hat or j-hat clicked
-void panel_input_ihat_update(char number) {
+void panel_input_basevector_init(void) {
+	input_max_count = clickables[clicked_index].max_input_count;
+}
+
+void panel_input_basevector_update(char number) {
 	input_text[input_text_index] = number;
 
 	// Update visually
-	int index = clicked_index * 4 + input_space_count + 9;
-	text_base_v[index].text = input_text;
+	int index = clicked_index * 2 + input_space_count;
+	text_base_v_input[index].text = input_text;
 }
 
-void panel_input_ihat_space(void) {
-	int index = clicked_index * 4 + input_space_count + 9;
+void panel_input_basevector_space(void) {
+	int index = clicked_index * 2 + input_space_count;
 
 	// Force a 0 is blank or just a '-'
-	if (!input_text_index || (input_text[0] == '-' && input_text_index == 1)) {
-		// Update visually
-		text_base_v[index].text = "0";
-		return;
+	if (!input_text_index || (input_text[0] == '-' && (input_text_index == 1 || input_text[1] == '0'))) {
+		input_text[0] = '0';
+		for (int input_index = 1; input_index < MAX_INPUT_LIST; ++input_index) {
+			input_text[input_index] = '\0';
+		}
 	}
 
-	char *input_done = input_text_storage[clicked_index];
+	char *input_done = input_text_storage[clicked_index][input_space_count];
 	for (int count = 0; count < MAX_INPUT_LIST; ++count) {
 		input_done[count] = input_text[count];
 	}
-	text_base_v[index].text = input_done;
+
+	// Update visually
+	text_base_v_input[index].text = input_done;
 }
 
-void panel_input_ihat_reset(void) {
+void panel_input_basevector_reset(void) {
+	// Convert char array into a float
+	CP_Vector input_converted;
+	sscanf_s(input_text_storage[clicked_index][0], "%f", &input_converted.x);
+	sscanf_s(input_text_storage[clicked_index][1], "%f", &input_converted.y);
 
+	input_converted.x += 0;
+
+	// Apply the transformation
+	clicked_index == 0 ? panel_ihat_transformation(input_converted) : panel_jhat_transformation(input_converted);
+
+	// Clear the base vector bracket visually
+	int index = clicked_index * 2;
+	text_base_v_input[index].text = "";
+	text_base_v_input[index + 1].text = "";
 }
